@@ -13,6 +13,9 @@ namespace CalendarReminder
         CalendarService GetService(string applicationName, string userName, string password);
         IEnumerable<EventEntry> GetAllEvents(CalendarService service, DateTime? startData);
 
+        IEnumerable<EventEntry> GetEventsRange(CalendarService service, DateTime startDate, DateTime endDate,
+                                               string calendarName);
+
     }
 
     public class CalenderHelper : ICalenderHelper

@@ -2,9 +2,11 @@
 using System.Configuration;
 using System.Collections.Generic;
 using CalendarReminder;
+using Ninject;
+using Ninject.Modules;
 using ServiceStack.Text;
 
-namespace ConsoleApplication1
+namespace CalendarReminderService
 {
     class Program
     {
@@ -21,9 +23,15 @@ namespace ConsoleApplication1
             var calendarName = ConfigurationManager.AppSettings["CalendarName"];
 
             var reminders = new List<CalendarEvent>();
-            
 
-            var helper = new CalenderHelper();
+
+            NinjectModule module = new CalendarReminderModule();
+            var kernel = new StandardKernel(module);
+
+            var helper = kernel.Get<ICalenderHelper>();
+            
+            
+            //var helper = new CalenderHelper();
             var service = helper.GetService(applicationName, userName, password);
             var events = helper.GetEventsRange(service, startRange, endRange,
                 calendarName);
