@@ -1,0 +1,36 @@
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    Dear @Model.Name, <br /><br />
+
+	You are scheduled to handle the following assignment this week: <br /><br />
+
+	@Model.Assignment on @Model.Date <br /><br />
+
+
+	* Please reply to this email to verify your assignment. <br /><br />         
+
+
+	Note: This is a beta test of the Congregation assignment reminder system.
+
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+           

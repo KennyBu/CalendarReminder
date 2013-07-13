@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentEmail">
+      <HintPath>..\packages\fluent-email.1.1.0\lib\net40\FluentEmail.dll</HintPath>
+    </Reference>
     <Reference Include="Google.GData.AccessControl">
       <HintPath>..\packages\Google.GData.AccessControl.1.8.0.0\lib\Google.GData.AccessControl.dll</HintPath>
     </Reference>
@@ -59,6 +62,9 @@
     <Compile Include="CalenderHelper.cs" />
     <Compile Include="EventDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
