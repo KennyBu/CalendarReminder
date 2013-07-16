@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    Dear @Model.Name, <br /><br />
+
+	There are no assignments scheduled for the week of @Model.Date <br /><br />
+
+	Note: This is a beta test of the Congregation assignment reminder system.
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+           

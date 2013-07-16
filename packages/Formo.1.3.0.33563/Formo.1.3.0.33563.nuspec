@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Formo</id>
+    <version>1.3.0.33563</version>
+    <title>Formo</title>
+    <authors>Chris Missal</authors>
+    <owners>Chris Missal</owners>
+    <licenseUrl>https://raw.github.com/ChrisMissal/Formo/master/license.txt</licenseUrl>
+    <projectUrl>http://chrismissal.github.com/Formo/</projectUrl>
+    <iconUrl>https://raw.github.com/ChrisMissal/Formo/master/img/formo_200_sq.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Formo lets you use your configuration file as a dynamic object.</description>
+    <releaseNotes />
+    <copyright>Copyright 2013 Chris Missal</copyright>
+    <language />
+    <tags>configuration dynamic</tags>
+  </metadata>
+</package>

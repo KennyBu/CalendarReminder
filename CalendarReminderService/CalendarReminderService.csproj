@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CalendarReminderService</RootNamespace>
     <AssemblyName>CalendarReminderService</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -33,10 +34,17 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="FluentEmail">
       <HintPath>..\packages\fluent-email.1.1.0\lib\net40\FluentEmail.dll</HintPath>
+    </Reference>
+    <Reference Include="Formo">
+      <HintPath>..\packages\Formo.1.3.0.33563\lib\net40\Formo.dll</HintPath>
     </Reference>
     <Reference Include="Google.GData.AccessControl">
       <HintPath>..\packages\Google.GData.AccessControl.1.8.0.0\lib\Google.GData.AccessControl.dll</HintPath>
@@ -52,6 +60,12 @@
     </Reference>
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.2.2.1.4\lib\net40-Full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.1.2\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="RazorEngine">
       <HintPath>..\packages\RazorEngine.3.0.8\lib\net40\RazorEngine.dll</HintPath>
@@ -92,12 +106,18 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Topshelf">
+      <HintPath>..\packages\Topshelf.3.1.1\lib\net40-full\Topshelf.dll</HintPath>
+    </Reference>
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.4.2\lib\net40\WebActivator.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalendarReminderJob.cs" />
     <Compile Include="CalendarReminderModule.cs" />
+    <Compile Include="CalendarReminderService.cs" />
+    <Compile Include="CalendarReminderWindowsService.cs" />
     <Compile Include="EmailHelper.cs" />
     <Compile Include="EmailTemplates.cs" />
     <Compile Include="Program.cs" />
@@ -106,6 +126,9 @@
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -116,6 +139,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="noassignmentemailtemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="emailtemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
