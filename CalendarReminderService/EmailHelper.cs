@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Mail;
+using System.Net.Mime;
 using CalendarReminder;
 using FluentEmail;
 
@@ -23,6 +23,14 @@ namespace CalendarReminderService
                        .Subject("Congregation Assignment Reminder: " + calendarEvent.Title  + " " + calendarEvent.Date.ToShortDateString())
                        .UsingClient(_smtpClient)
                        .UsingTemplateFromFile("emailtemplate.txt", new { Name = calendarEvent.EventDetail.Name, Assignment = calendarEvent.EventDetail.Assignment, Date = calendarEvent.Date.ToShortDateString() });
+
+            if (calendarEvent.EventDetail.Assignment.Contains("Tidying Assignment") ||
+                calendarEvent.EventDetail.Assignment.Contains("Cleaning Assignment"))
+            {
+                var location = string.Concat(AppDomain.CurrentDomain.BaseDirectory, "\\Lists\\GroupCleaningReminders.pdf");
+                var attachment = new Attachment(location, MediaTypeNames.Application.Pdf);
+                email.Attach(attachment);
+            }
 
             email.Send();
         }
