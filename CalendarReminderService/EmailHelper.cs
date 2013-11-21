@@ -46,5 +46,34 @@ namespace CalendarReminderService
 
             email.Send();
         }
+
+        public void SendKMEmail(Assignee assignee, string kmFullFileName)
+        {
+            var email = Email
+                       .From("assignmentreminder@gmail.com", "Congregation Assignment Reminder")
+                       .To(assignee.Email)
+                       .Subject("New Kingdom Ministry")
+                       .UsingClient(_smtpClient)
+                       .UsingTemplateFromFile("km.txt", new {assignee.Name });
+            
+            var attachment = new Attachment(kmFullFileName, MediaTypeNames.Application.Pdf);
+            email.Attach(attachment);
+
+            email.Send();
+
+            email.Dispose();
+        }
+
+        public void SendNoKMFoundEmail()
+        {
+            var email = Email
+                       .From("assignmentreminder@gmail.com", "Congregation Assignment Reminder")
+                       .To("ken.burkhardt@gmail.com")
+                       .Subject("New Kingdom Ministry")
+                       .UsingClient(_smtpClient)
+                       .UsingTemplateFromFile("nokmfoundemailtemplate.txt", new { Name = "Ken"});
+
+            email.Send();
+        }
     }
 }

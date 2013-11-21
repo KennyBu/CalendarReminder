@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assignee.cs" />
     <Compile Include="CalendarEvent.cs" />
     <Compile Include="CalenderHelper.cs" />
     <Compile Include="EventDetail.cs" />

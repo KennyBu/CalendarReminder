@@ -1,0 +1,31 @@
+﻿<html>
+<head>
+    <title></title>
+</head>
+<body>
+    Dear @Model.Name, <br /><br />
+
+	A new Kingdom Ministry has been published. <br /><br />
+
+	Please find the document attached to this email. <br /><br />
+
+	Note: This is a beta test of the Kingdom Ministry Delivery system.
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+           

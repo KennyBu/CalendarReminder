@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -35,6 +36,7 @@ namespace CalendarReminderService
             var applicationName = config.ApplicationName;
             var calendarName = config.CalendarName;
             var sendEmails = config.SendEmails<bool?>(false);
+            var db = new PetaPoco.Database("AssignifyItDatabase");
 
             var reminders = new List<CalendarEvent>();
 
@@ -89,6 +91,55 @@ namespace CalendarReminderService
                 _logger.Info("----------------------");
 
             }
+
+            //Email the KM's To Approved Publishers
+            var manager = new AssigneeManager(db);
+            var list = manager.GetKMList();
+
+            //todo get the KM file(s)
+            var location = string.Format("{0}\\KM", AppDomain.CurrentDomain.BaseDirectory);
+            var finishedLocation = string.Format("{0}\\KMSent", AppDomain.CurrentDomain.BaseDirectory);
+
+            var isExists = Directory.Exists(location);
+            if (!isExists)
+                Directory.CreateDirectory(location);
+
+            isExists = Directory.Exists(finishedLocation);
+            if (!isExists)
+                Directory.CreateDirectory(finishedLocation);
+            
+            var kmFileNames = Directory.GetFiles(location);
+            Directory.GetFiles(location);
+
+            if (kmFileNames.Length == 0)
+            {
+                emailHelper.SendNoKMFoundEmail();
+            }
+
+            //Loop and email
+            foreach (var kmFileName in kmFileNames)
+            {
+                var name = Path.GetFileName(kmFileName);
+                var finishedFile = string.Format("{0}\\{1}", finishedLocation, name);
+
+                foreach (var assignee in list)
+                {
+                    if (sendEmails)
+                    {
+                        emailHelper = GetNewEmailHelper(userName, password);
+                        emailHelper.SendKMEmail(assignee, kmFileName);
+                    }
+
+                    _logger.Info("Event Name: Sent KM" );
+                    _logger.Info(assignee.Name);
+                    _logger.Info(assignee.Email);
+                    _logger.Info(kmFileName);
+                    _logger.Info("----------------------");
+                }
+
+                //remove file
+                File.Move(kmFileName,finishedFile);
+            }
         }
 
         private static DateTime GetThisWeeksMondayDate(DateTime currentDate)
@@ -101,6 +152,18 @@ namespace CalendarReminderService
             var dayBefore = currentDate.AddDays(-1);
 
             return GetThisWeeksMondayDate(dayBefore);
+        }
+
+        private EmailHelper GetNewEmailHelper(string userName, string password)
+        {
+            var client = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential(userName, password),
+                EnableSsl = true
+            };
+            var emailHelper = new EmailHelper(client);
+
+            return emailHelper;
         }
     }
 }
