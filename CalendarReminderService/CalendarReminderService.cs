@@ -75,13 +75,18 @@ namespace CalendarReminderService
 
             if (reminders.Count == 0)
             {
-                emailHelper.SendNoEventsEmail(mondayOfThisWeek.ToShortDateString());
+                if (sendEmails)
+                {
+                    emailHelper.SendNoEventsEmail(mondayOfThisWeek.ToShortDateString());    
+                }
             }
 
             foreach (var reminder in reminders.OrderBy(a => a.Date))
             {
                 if (sendEmails)
+                {
                     emailHelper.SendAssignmentReminderEmail(reminder);
+                }
 
                 _logger.Info("Event Name:" + reminder.Title);
                 _logger.Info(reminder.Date.ToShortDateString());
@@ -92,53 +97,65 @@ namespace CalendarReminderService
 
             }
 
-            //Email the KM's To Approved Publishers
-            var manager = new AssigneeManager(db);
-            var list = manager.GetKMList();
-
-            //todo get the KM file(s)
-            var location = string.Format("{0}\\KM", AppDomain.CurrentDomain.BaseDirectory);
-            var finishedLocation = string.Format("{0}\\KMSent", AppDomain.CurrentDomain.BaseDirectory);
-
-            var isExists = Directory.Exists(location);
-            if (!isExists)
-                Directory.CreateDirectory(location);
-
-            isExists = Directory.Exists(finishedLocation);
-            if (!isExists)
-                Directory.CreateDirectory(finishedLocation);
-            
-            var kmFileNames = Directory.GetFiles(location);
-            Directory.GetFiles(location);
-
-            if (kmFileNames.Length == 0)
+            try
             {
-                emailHelper.SendNoKMFoundEmail();
-            }
 
-            //Loop and email
-            foreach (var kmFileName in kmFileNames)
-            {
-                var name = Path.GetFileName(kmFileName);
-                var finishedFile = string.Format("{0}\\{1}", finishedLocation, name);
+                //Email the KM's To Approved Publishers
+                var manager = new AssigneeManager(db);
+                var list = manager.GetKMList();
 
-                foreach (var assignee in list)
+                //todo get the KM file(s)
+                var location = string.Format("{0}\\KM", AppDomain.CurrentDomain.BaseDirectory);
+                var finishedLocation = string.Format("{0}\\KMSent", AppDomain.CurrentDomain.BaseDirectory);
+
+                var isExists = Directory.Exists(location);
+                if (!isExists)
+                    Directory.CreateDirectory(location);
+
+                isExists = Directory.Exists(finishedLocation);
+                if (!isExists)
+                    Directory.CreateDirectory(finishedLocation);
+
+                var kmFileNames = Directory.GetFiles(location);
+                Directory.GetFiles(location);
+
+                if (kmFileNames.Length == 0)
                 {
                     if (sendEmails)
                     {
-                        emailHelper = GetNewEmailHelper(userName, password);
-                        emailHelper.SendKMEmail(assignee, kmFileName);
+                        emailHelper.SendNoKMFoundEmail();
                     }
-
-                    _logger.Info("Event Name: Sent KM" );
-                    _logger.Info(assignee.Name);
-                    _logger.Info(assignee.Email);
-                    _logger.Info(kmFileName);
-                    _logger.Info("----------------------");
                 }
 
-                //remove file
-                File.Move(kmFileName,finishedFile);
+                //Loop and email
+                foreach (var kmFileName in kmFileNames)
+                {
+                    var name = Path.GetFileName(kmFileName);
+                    var finishedFile = string.Format("{0}\\{1}", finishedLocation, name);
+
+                    foreach (var assignee in list)
+                    {
+                        if (sendEmails)
+                        {
+                            emailHelper = GetNewEmailHelper(userName, password);
+                            emailHelper.SendKMEmail(assignee, kmFileName);
+                        }
+
+                        _logger.Info("Event Name: Sent KM");
+                        _logger.Info(assignee.Name);
+                        _logger.Info(assignee.Email);
+                        _logger.Info(kmFileName);
+                        _logger.Info("----------------------");
+                    }
+
+                    //remove file
+                    File.Move(kmFileName, finishedFile);
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.Error("An Error Occurred Processing the KMs:", exception);
+                throw;
             }
         }
 
