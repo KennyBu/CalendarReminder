@@ -56,7 +56,7 @@ namespace CalendarReminderService
                        .UsingClient(_smtpClient)
                        .UsingTemplateFromFile("km.txt", new {assignee.Name });
             
-            var attachment = new Attachment(kmFullFileName, MediaTypeNames.Application.Pdf);
+            var attachment = new Attachment(kmFullFileName);
             email.Attach(attachment);
 
             email.Send();
@@ -74,6 +74,23 @@ namespace CalendarReminderService
                        .UsingTemplateFromFile("nokmfoundemailtemplate.txt", new { Name = "Ken"});
 
             email.Send();
+        }
+
+        public void SendTestEmail(string emailAddress, string name, string file)
+        {
+            var email = Email
+                       .From("assignmentreminder@gmail.com", "Congregation Assignment Reminder")
+                       .To(emailAddress)
+                       .Subject("New Kingdom Ministry Test")
+                       .UsingClient(_smtpClient)
+                       .UsingTemplateFromFile("km.txt", new { Name = name });
+
+            var attachment = new Attachment(file);
+            email.Attach(attachment);
+
+            email.Send();
+
+            email.Dispose();
         }
     }
 }

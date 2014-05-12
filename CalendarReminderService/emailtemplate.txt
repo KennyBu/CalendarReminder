@@ -11,9 +11,8 @@
 
 
 	* Please reply to this email to verify your assignment. <br /><br />         
-
-
-	Note: This is a beta test of the Congregation assignment reminder system.
+	
+	Note: If you cannot fulfill an assignment please contact the overseer of that department.
 
     
 </body>

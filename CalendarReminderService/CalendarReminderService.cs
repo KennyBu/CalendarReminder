@@ -104,17 +104,8 @@ namespace CalendarReminderService
                 var manager = new AssigneeManager(db);
                 var list = manager.GetKMList();
 
-                //todo get the KM file(s)
-                var location = string.Format("{0}\\KM", AppDomain.CurrentDomain.BaseDirectory);
-                var finishedLocation = string.Format("{0}\\KMSent", AppDomain.CurrentDomain.BaseDirectory);
-
-                var isExists = Directory.Exists(location);
-                if (!isExists)
-                    Directory.CreateDirectory(location);
-
-                isExists = Directory.Exists(finishedLocation);
-                if (!isExists)
-                    Directory.CreateDirectory(finishedLocation);
+                var location = "C:\\temp\\KMs\\send";
+                var finishedLocation = "C:\\temp\\KMs\\sent";
 
                 var kmFileNames = Directory.GetFiles(location);
                 Directory.GetFiles(location);
