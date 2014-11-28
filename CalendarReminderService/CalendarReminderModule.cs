@@ -1,4 +1,3 @@
-using CalendarReminder;
 using Ninject.Modules;
 
 namespace CalendarReminderService
@@ -7,7 +6,7 @@ namespace CalendarReminderService
     {
         public override void Load()
         {
-            Bind<ICalenderHelper>().To<CalenderHelper>();
+           
         }
     }
 }

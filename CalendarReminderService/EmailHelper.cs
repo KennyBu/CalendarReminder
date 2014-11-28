@@ -19,13 +19,13 @@ namespace CalendarReminderService
         {
             var email = Email
                        .From("assignmentreminder@gmail.com","Congregation Assignment Reminder")
-                       .To(calendarEvent.EventDetail.Email)
-                       .Subject("Congregation Assignment Reminder: " + calendarEvent.Title  + " " + calendarEvent.Date.ToShortDateString())
+                       .To(calendarEvent.Email)
+                       .Subject("Congregation Assignment Reminder: " + calendarEvent.Title + " " + calendarEvent.AssignmnetDate.ToShortDateString())
                        .UsingClient(_smtpClient)
-                       .UsingTemplateFromFile("emailtemplate.txt", new { Name = calendarEvent.EventDetail.Name, Assignment = calendarEvent.EventDetail.Assignment, Date = calendarEvent.Date.ToShortDateString() });
+                       .UsingTemplateFromFile("emailtemplate.txt", new { Name = calendarEvent.Name, Assignment = calendarEvent.Assignment, Date = calendarEvent.AssignmnetDate.ToShortDateString() });
 
-            if (calendarEvent.EventDetail.Assignment.Contains("Tidying Assignment") ||
-                calendarEvent.EventDetail.Assignment.Contains("Cleaning Assignment"))
+            if (calendarEvent.Assignment.Contains("Tidying Assignment") ||
+                calendarEvent.Assignment.Contains("Cleaning Assignment"))
             {
                 var location = string.Concat(AppDomain.CurrentDomain.BaseDirectory, "\\Lists\\GroupCleaningReminders.pdf");
                 var attachment = new Attachment(location, MediaTypeNames.Application.Pdf);

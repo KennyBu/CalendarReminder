@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using CalendarReminder;
 using Formo;
 using NLog;
-using Ninject;
-using Ninject.Modules;
-using ServiceStack.Text;
 
 namespace CalendarReminderService
 {
@@ -33,35 +28,13 @@ namespace CalendarReminderService
             dynamic config = new Configuration();
             var userName = config.UserName;
             var password = config.Password;
-            var applicationName = config.ApplicationName;
-            var calendarName = config.CalendarName;
+            
             var sendEmails = config.SendEmails<bool?>(false);
             var db = new PetaPoco.Database("AssignifyItDatabase");
 
-            var reminders = new List<CalendarEvent>();
+            var calendarReminder = new SqlCalendarReminder(db);
 
-            NinjectModule module = new CalendarReminderModule();
-            var kernel = new StandardKernel(module);
-
-            var helper = kernel.Get<ICalenderHelper>();
-
-            var service = helper.GetService(applicationName, userName, password);
-            var events = helper.GetEventsRange(service, startRange, endRange,
-                calendarName);
-            
-            foreach (var eventEntry in events)
-            {
-                var calendarEvent = new CalendarEvent
-                {
-                    Title = eventEntry.Title.Text,
-                    Date = eventEntry.Times[0].StartTime,
-                    EventDetail =
-                        JsonSerializer.DeserializeFromString<EventDetail>(
-                            eventEntry.Content.Content)
-                };
-
-                reminders.Add(calendarEvent);
-            }
+            var reminders = calendarReminder.GetEvents(startRange, endRange);
 
             var client = new SmtpClient("smtp.gmail.com", 587)
             {
@@ -81,7 +54,7 @@ namespace CalendarReminderService
                 }
             }
 
-            foreach (var reminder in reminders.OrderBy(a => a.Date))
+            foreach (var reminder in reminders.OrderBy(a => a.AssignmnetDate))
             {
                 if (sendEmails)
                 {
@@ -89,64 +62,12 @@ namespace CalendarReminderService
                 }
 
                 _logger.Info("Event Name:" + reminder.Title);
-                _logger.Info(reminder.Date.ToShortDateString());
-                _logger.Info(reminder.EventDetail.Assignment);
-                _logger.Info(reminder.EventDetail.Email);
-                _logger.Info(reminder.EventDetail.Name);
+                _logger.Info(reminder.AssignmnetDate.ToShortDateString());
+                _logger.Info(reminder.Assignment);
+                _logger.Info(reminder.Email);
+                _logger.Info(reminder.Name);
                 _logger.Info("----------------------");
 
-            }
-
-            try
-            {
-
-                //Email the KM's To Approved Publishers
-                var manager = new AssigneeManager(db);
-                var list = manager.GetKMList();
-
-                var location = "C:\\temp\\KMs\\send";
-                var finishedLocation = "C:\\temp\\KMs\\sent";
-
-                var kmFileNames = Directory.GetFiles(location);
-                Directory.GetFiles(location);
-
-                if (kmFileNames.Length == 0)
-                {
-                    if (sendEmails)
-                    {
-                        emailHelper.SendNoKMFoundEmail();
-                    }
-                }
-
-                //Loop and email
-                foreach (var kmFileName in kmFileNames)
-                {
-                    var name = Path.GetFileName(kmFileName);
-                    var finishedFile = string.Format("{0}\\{1}", finishedLocation, name);
-
-                    foreach (var assignee in list)
-                    {
-                        if (sendEmails)
-                        {
-                            emailHelper = GetNewEmailHelper(userName, password);
-                            emailHelper.SendKMEmail(assignee, kmFileName);
-                        }
-
-                        _logger.Info("Event Name: Sent KM");
-                        _logger.Info(assignee.Name);
-                        _logger.Info(assignee.Email);
-                        _logger.Info(kmFileName);
-                        _logger.Info("----------------------");
-                    }
-
-                    //remove file
-                    File.Move(kmFileName, finishedFile);
-                }
-            }
-            catch (Exception exception)
-            {
-                _logger.Error("An Error Occurred Processing the KMs:", exception);
-                throw;
             }
         }
 
@@ -160,18 +81,6 @@ namespace CalendarReminderService
             var dayBefore = currentDate.AddDays(-1);
 
             return GetThisWeeksMondayDate(dayBefore);
-        }
-
-        private EmailHelper GetNewEmailHelper(string userName, string password)
-        {
-            var client = new SmtpClient("smtp.gmail.com", 587)
-            {
-                Credentials = new NetworkCredential(userName, password),
-                EnableSsl = true
-            };
-            var emailHelper = new EmailHelper(client);
-
-            return emailHelper;
         }
     }
 }

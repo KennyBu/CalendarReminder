@@ -55,18 +55,6 @@
     <Reference Include="FluentEmail">
       <HintPath>..\packages\fluent-email.1.1.0\lib\net40\FluentEmail.dll</HintPath>
     </Reference>
-    <Reference Include="Google.GData.AccessControl">
-      <HintPath>..\packages\Google.GData.AccessControl.1.8.0.0\lib\Google.GData.AccessControl.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.GData.Calendar">
-      <HintPath>..\packages\Google.GData.Calendar.1.8.0.0\lib\Google.GData.Calendar.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.GData.Client">
-      <HintPath>..\packages\Google.GData.Client.1.8.0.0\lib\Google.GData.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.GData.Extensions">
-      <HintPath>..\packages\Google.GData.Extensions.1.8.0.0\lib\Google.GData.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack">
       <HintPath>..\packages\ServiceStack.2.96\lib\ServiceStack.dll</HintPath>
     </Reference>
@@ -81,8 +69,6 @@
   <ItemGroup>
     <Compile Include="Assignee.cs" />
     <Compile Include="CalendarEvent.cs" />
-    <Compile Include="CalenderHelper.cs" />
-    <Compile Include="EventDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
