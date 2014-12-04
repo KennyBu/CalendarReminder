@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using CalendarReminder;
 using Formo;
+using LinqToExcel;
 using NLog;
 
 namespace CalendarReminderService
@@ -32,8 +34,33 @@ namespace CalendarReminderService
             var sendEmails = config.SendEmails<bool?>(false);
             var db = new PetaPoco.Database("AssignifyItDatabase");
 
+            //Upload Reminders in Excel File
+            const string excelPath = "C:\\CalendarReminderService\\excel\\Assignments.xlsx";
+            const string processedPath = "C:\\CalendarReminderService\\processed\\Assignments.xlsx";
+
+            var excel = new ExcelQueryFactory(excelPath);
+
             var calendarReminder = new SqlCalendarReminder(db);
 
+            try
+            {
+                var assignments = from e in excel.Worksheet<Assignment>("Assignments")
+                                  select e;
+
+                foreach (var assignment in assignments)
+                {
+                    var calendarEvent = MapFrom(assignment);
+                    calendarReminder.Create(calendarEvent);
+                }
+
+                File.Move(excelPath, processedPath);
+            }
+            catch (Exception e)
+            {
+                 _logger.Error(e);
+            }
+
+            //Process The Reminders
             var reminders = calendarReminder.GetEvents(startRange, endRange);
 
             var client = new SmtpClient("smtp.gmail.com", 587)
@@ -81,6 +108,21 @@ namespace CalendarReminderService
             var dayBefore = currentDate.AddDays(-1);
 
             return GetThisWeeksMondayDate(dayBefore);
+        }
+
+        private static CalendarEvent MapFrom(Assignment assignment)
+        {
+            var calendarEvent = new CalendarEvent
+            {
+                Id = Guid.NewGuid(),
+                AssignmnetDate = assignment.AssignmentDate,
+                Title = assignment.Title,
+                Name = assignment.Name,
+                Assignment = assignment.Title,
+                Email = assignment.Email
+            };
+
+            return calendarEvent;
         }
     }
 }
